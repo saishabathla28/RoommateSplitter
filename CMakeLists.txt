@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+project(RoommateSplitter LANGUAGES CXX)
+add_executable(roommate-splitter main.cpp)
+target_compile_features(roommate-splitter PRIVATE cxx_std_17)
+set_target_properties(roommate-splitter PROPERTIES CXX_EXTENSIONS OFF)
