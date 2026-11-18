@@ -1,27 +1,55 @@
-# Roommate Expense Splitter
+# Roommate Splitter
 
-A C++17 terminal app for roommates who share rent, utility bills, groceries, and other household costs. Add an expense, choose who paid, and the app splits it equally among the current roommates and shows who owes whom.
+A full-stack dashboard for roommates who share rent, utility bills, groceries, and other household costs. The frontend uses HTML, CSS, and JavaScript. The Python server uses MySQL Connector/Python to save the household in MySQL.
 
 ## What you can do
 
-- Add, remove, and view roommates. Someone who moves out keeps their existing balance and is left out of future expenses.
-- Split rent, electricity, water, Wi-Fi, cooking gas, groceries, cleaning supplies, and repairs.
-- See who paid each expense and what everyone owes.
-- Record full or partial payments. The app shows **Everyone is settled up** when all balances reach zero.
+- View monthly spending, outstanding balances, and spending by category.
+- Add and remove roommates. Removing someone excludes them from new expenses while keeping their old shares and balances.
+- Add expenses and see exactly how each one was shared. New expenses split equally among current roommates, with any leftover paise assigned in roster order.
+- Record full or partial payments and see payment history. When all outstanding balances reach zero, the dashboard shows **Everyone is settled up**.
 
-## Run it
+On first launch, a new database is filled with Aarav, Ananya, Kabir, and six sample expenses. The example starts with Ananya owing Aarav ₹3,933.00 and Kabir owing Aarav ₹6,444.00.
 
-Open the repository folder in VS Code and select **Terminal → New Terminal**. In Windows PowerShell with MinGW g++ installed, run:
+## Run it in VS Code
 
-```powershell
-g++ -std=c++17 -static main.cpp -o roommate-splitter.exe
-if ($LASTEXITCODE -eq 0) { .\roommate-splitter.exe }
+You need Python 3.10 or newer and a running MySQL server. Open the project folder in VS Code, then open a PowerShell terminal.
+
+### 1. Create the database and an app user
+
+Connect to your local MySQL server as an administrator using MySQL Workbench or the MySQL command line. Run this SQL once. Replace the example password with your own password.
+
+```sql
+CREATE DATABASE IF NOT EXISTS roommate_splitter CHARACTER SET utf8mb4;
+CREATE USER IF NOT EXISTS 'roommate_app'@'localhost' IDENTIFIED BY 'choose-your-local-password';
+GRANT SELECT, INSERT, UPDATE, CREATE, REFERENCES
+ON roommate_splitter.* TO 'roommate_app'@'localhost';
 ```
 
-You can also build with CMake using the included `CMakeLists.txt`.
+If that MySQL user already exists, use its current password. The app creates its own tables on startup.
 
-## Try an example
+### 2. Install the connector and start the server
 
-The app starts with Aarav, Ananya, Kabir, and six sample expenses. Choose **5** to see the expenses and **6** to see the balances. Ananya initially owes Aarav **Rs. 3,933.00**. If she pays him **Rs. 500.00**, record the payment with **7** and her remaining balance drops to **Rs. 3,433.00**.
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+$env:MYSQL_PASSWORD = Read-Host "MySQL app user password" -MaskInput
+.\.venv\Scripts\python.exe app.py
+```
 
-Amounts are stored in integer paise. If a bill splits unevenly, the first roommates in the list get the extra paise so the shares add up exactly. Changes save automatically to a local `household.txt` file.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000). Use **Ctrl+C** in the terminal to stop the server. If port 8000 is busy, pass `--port 8001` to `app.py`.
+
+Set `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, or `MYSQL_DATABASE` in the same terminal if your setup differs. The defaults are `127.0.0.1`, `3306`, `roommate_app`, and `roommate_splitter`.
+
+## How the project is organized
+
+| File | Purpose |
+| --- | --- |
+| `app.py` | Serves the frontend and validates the API requests. |
+| `database.py` | Connects to MySQL, records changes in transactions, and calculates balances. |
+| `schema.sql` | Defines the roommates, expenses, shares, and payments tables. |
+| `static/` | Contains the dashboard and its forms, styling, and API calls. |
+
+Money is stored as integer paise. Expense shares record who participated when the expense was added. Payments reduce what a roommate owes without changing anyone's original expense share. This version is a local app for one household. It starts with a new MySQL database and uses the built-in demo records.
+
+The original standalone C++ demo remains in main.cpp and CMakeLists.txt. The web dashboard uses the Python backend and MySQL.

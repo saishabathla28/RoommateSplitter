@@ -4,3 +4,8 @@
 /*.exe
 /practice.txt
 /practice.txt.tmp
+
+/.venv/
+__pycache__/
+*.pyc
+.env

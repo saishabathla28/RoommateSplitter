@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roommate Splitter</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/dashboard.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="#overview"><span class="brand-icon" aria-hidden="true">◫</span><span>Roommate<br>Splitter</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#overview" aria-current="page"><span aria-hidden="true">◈</span> Overview</a>
+      <a href="#expenses"><span aria-hidden="true">▤</span> Expenses</a>
+      <a href="#roommates"><span aria-hidden="true">◎</span> Roommates</a>
+      <a href="#payments"><span aria-hidden="true">⇄</span> Payments</a>
+    </nav>
+    <div class="sidebar-footer"><span aria-hidden="true">⌂</span> Shared apartment</div>
+  </aside>
+  <main>
+    <header class="topbar"><span id="breadcrumb">Apartment / Overview</span><button type="button" data-open="expense">+ Add expense</button></header>
+    <p role="alert" id="error" hidden></p>
+    <div id="content" aria-live="polite"><p>Loading your apartment…</p></div>
+  </main>
+  <dialog id="dialog" aria-labelledby="dialog-title">
+    <form id="action-form">
+      <div class="card-heading"><h2 id="dialog-title"></h2><button type="button" class="close" data-close aria-label="Close">×</button></div>
+      <div id="fields"></div>
+      <p id="form-error" role="alert" hidden></p>
+      <div class="form-actions"><button type="button" class="secondary" data-close>Cancel</button><button id="submit">Save</button></div>
+    </form>
+  </dialog>
+  <div id="notice" role="status" hidden></div>
+</body>
+</html>
