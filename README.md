@@ -1,20 +1,27 @@
 # Roommate Expense Splitter
 
-A small C++17 console project. It opens with Aarav, Ananya, and Kabir and six shared expenses.
+A C++17 terminal app for roommates who share rent, utility bills, groceries, and other household costs. Add an expense, choose who paid, and the app splits it equally among the current roommates and shows who owes whom.
 
-## Run from VS Code
+## What you can do
 
-Open this folder and select **Terminal → New Terminal**. In PowerShell, run:
+- Add, remove, and view roommates. Someone who moves out keeps their existing balance and is left out of future expenses.
+- Split rent, electricity, water, Wi-Fi, cooking gas, groceries, cleaning supplies, and repairs.
+- See who paid each expense and what everyone owes.
+- Record full or partial payments. The app shows **Everyone is settled up** when all balances reach zero.
+
+## Run it
+
+Open the repository folder in VS Code and select **Terminal → New Terminal**. In Windows PowerShell with MinGW g++ installed, run:
 
 ```powershell
-g++ -std=c++17 -Wall -Wextra -Wpedantic -static main.cpp -o roommate-splitter.exe
+g++ -std=c++17 -static main.cpp -o roommate-splitter.exe
 if ($LASTEXITCODE -eq 0) { .\roommate-splitter.exe }
 ```
 
-If PowerShell cannot find g++, use `C:\msys64\ucrt64\bin\g++.exe` in the first command. The included CMake file also builds the same program.
+You can also build with CMake using the included `CMakeLists.txt`.
 
-Choose **3** to see the roommates, **5** to see the sample expenses, or **6** to see who owes whom. After someone transfers money, choose **7** to record the payment. Partial payments leave the remaining balance visible.
+## Try an example
 
-New expenses are split equally among current roommates. Leftover paise go to the first roommates on the list. Removing someone hides them from the roster and excludes them from new expenses. Their earlier shares and balances remain available.
+The app starts with Aarav, Ananya, Kabir, and six sample expenses. Choose **5** to see the expenses and **6** to see the balances. Ananya initially owes Aarav **Rs. 3,933.00**. If she pays him **Rs. 500.00**, record the payment with **7** and her remaining balance drops to **Rs. 3,433.00**.
 
-Changes save automatically to `household.txt` in the current folder. Run `.\roommate-splitter.exe practice.txt` to try a separate household.
+Amounts are stored in integer paise. If a bill splits unevenly, the first roommates in the list get the extra paise so the shares add up exactly. Changes save automatically to a local `household.txt` file.
